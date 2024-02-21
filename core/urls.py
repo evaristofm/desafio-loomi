@@ -18,16 +18,17 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from post.views import PostViewSet, LikeViewSet
-
-router = routers.SimpleRouter()
-router.register('posts', PostViewSet)
-router.register('like', LikeViewSet)
+# from post.views import PostViewSet, LikeViewSet
+#
+# router = routers.SimpleRouter()
+# router.register('posts', PostViewSet)
+# router.register('like', LikeViewSet)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/user/', include('account.urls')),
     #path('like/', include('post.urls')),
 ]
 
-urlpatterns += router.urls
+# urlpatterns += router.urls
