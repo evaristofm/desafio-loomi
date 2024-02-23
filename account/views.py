@@ -26,7 +26,6 @@ class UserRegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class UserLoginview(APIView):
     renderer_classes = [UserRenderer]
 
@@ -38,7 +37,7 @@ class UserLoginview(APIView):
 
             user = authenticate(email=email, password=password)
             if user is None:
-                Response({'erros': {'non_field_errors': ['Email or Password is not valid']}},
+                return Response({'erros': {'non_field_errors': ['Email or Password is not valid']}},
                          status=status.HTTP_400_BAD_REQUEST)
 
             token = get_tokens_for_user(user)
@@ -46,9 +45,6 @@ class UserLoginview(APIView):
 
         return Response({'erros': {'non_field_errors': ['Email or Password is not valid']}},
                         status=status.HTTP_400_BAD_REQUEST)
-
-
-
 
 
 class UserProfileView(APIView):
