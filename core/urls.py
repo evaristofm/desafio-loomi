@@ -18,19 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework import routers
-
-# from post.views import PostViewSet, LikeViewSet
-#
-# router = routers.SimpleRouter()
-# router.register('posts', PostViewSet)
-# router.register('like', LikeViewSet)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('account.urls')),
     path('api/post/', include('post.urls')),
+    path('api/comment/', include('comments.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# urlpatterns += router.urls
+

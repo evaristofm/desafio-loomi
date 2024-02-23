@@ -21,17 +21,5 @@ class Post(models.Model):
     comments = models.ManyToManyField(Comment, blank=True)
     likes = models.ManyToManyField(Like, blank=True)
 
-    def has_image(self):
-        return self.image is not None and self.image != ''
-
-    def remove_image(self):
-        if self.has_image():
-            if os.path.isfile(self.image.path):
-                os.remove(self.image.path)
-
-    def delete(self):
-        self.remove_image()
-        super().delete()
-
     def __str__(self):
         return self.body

@@ -1,14 +1,10 @@
-from django.http import JsonResponse
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
-
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 from post.models import Post
-from comments.models import Like
 from post.serializers import PostSerializer
 
 
@@ -17,9 +13,8 @@ class PostViewSet(ViewSet):
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
 
-    def list(self, request, *args, **kwargs):
-        query_set = Post.objects.all()
-        return Response(self.serializer_class(query_set, many=True).data, status=status.HTTP_200_OK)
+    def list(self, request):
+        return Response(self.serializer_class(self.queryset, many=True).data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         request.data['user'] = request.user.id
@@ -29,27 +24,27 @@ class PostViewSet(ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, id=None, *args, **kwargs):
+    def retrieve(self, request, id=None):
         post = get_object_or_404(self.queryset, pk=id)
-        serializer = PostSerializer(post)
+        serializer = self.serializer_class(post)
         return Response(serializer.data)
 
-    def remove(self, request, *args, **kwargs):
+    def remove(self, request):
         post = Post.objects.get(id=self.kwargs.get('id'))
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-@api_view(['POST'])
-def post_like(request, pk):
-    post = Post.objects.get(pk=pk)
-    like = Like.objects.create(user=request.user, post=post)
-
-    post.likes_count += 1
-    post.likes.add(like)
-    post.save()
-
-    return JsonResponse({'status': 200})
+#
+# @api_view(['POST'])
+# def post_like(request, pk):
+#     post = Post.objects.get(pk=pk)
+#     like = Like.objects.create(user=request.user, post=post)
+#
+#     post.likes_count += 1
+#     post.likes.add(like)
+#     post.save()
+#
+#     return JsonResponse({'status': 200})
 
 
 # class LikeViewSet(ModelViewSet):
