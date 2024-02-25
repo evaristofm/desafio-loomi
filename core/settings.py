@@ -89,15 +89,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': config('DB_DRIVER', 'django.db.backends.postgresql'),
-        'USER': config('PG_USER', 'postgres'),
-        'PASSWORD': config('PG_PASSWORD', 'postgres'),
-        'NAME': config('PG_DB', 'postgres'),
-        'PORT': config('PG_PORT', '5432'),
-        'HOST': config('PG_HOST', 'localhost'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('POSTGRES_DB', 'db'),  # postgres
+        'USER': config('POSTGRES_USER', 'postgres'),
+        'PASSWORD': config('POSTGRES_PASSWORD', 'postgres'),
+        # 'db' caso exista um serviço com esse nome.
+        'HOST': config('DB_HOST', '127.0.0.1'),
+        'PORT': '5432',
     }
 }
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
