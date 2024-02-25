@@ -19,12 +19,22 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from post.views import PostViewSet
+from comments.views import CommentViewSet
+
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+
+router.register('api/post', PostViewSet)
+router.register('api/comment', CommentViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('account.urls')),
-    path('api/post/', include('post.urls')),
-    path('api/comment/', include('comments.urls')),
+    # path('api/post/', include('post.urls')),
+    # path('api/comment/', include('comments.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
+urlpatterns += router.urls

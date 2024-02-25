@@ -13,6 +13,13 @@ class CommentViewSet(ViewSet):
     queryset = Comment.objects.all()
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = Comment.objects.filter(user=self.kwargs.get('pk'))
+
+    def get_object(self):
+        queryset = get_object_or_404(self.queryset, pk=self.kwargs.get('pk'))
+        return queryset
+
     def list(self, request):
         return Response(self.serializer_class(self.queryset, many=True).data,
                         status=status.HTTP_200_OK)
@@ -25,12 +32,19 @@ class CommentViewSet(ViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, id=None):
-        post = get_object_or_404(self.queryset, pk=id)
+    def retrieve(self, request, pk=None):
+        post = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(post)
         return Response(serializer.data)
 
-    def remove(self, request, id=None):
-        post = self.queryset.get(id)
+    def update(self, request, pk=None):
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+
+    def delete(self, request, pk=None):
+        post = self.get_object()
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
