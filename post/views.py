@@ -25,7 +25,7 @@ class PostViewSet(ViewSet):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
@@ -51,18 +51,6 @@ class PostViewSet(ViewSet):
 #     return JsonResponse({'status': 200})
 
 
-# class LikeViewSet(ModelViewSet):
-#     queryset = Like.objects.all()
-#     serializer_class = LikeSerializer
-#
-#     def create(self, request, pk=None, *args, **kwargs):
-#         post = Post.objects.get(pk=pk)
-#         post.likes_count += 1
-#         post.save()
-#         return Response({'status': 200})
-#
-#     def destroy(self, request, pk=None, *args, **kwargs):
-#         post = Post.objects.get(pk=pk)
-#         post.likes_count -= 1
-#         post.save()
-#         return Response({'status': 204})
+
+
+

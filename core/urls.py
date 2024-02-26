@@ -15,14 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
+from rest_framework import routers
+from django.urls import path, include
 from django.conf.urls.static import static
 
 from post.views import PostViewSet
-from comments.views import CommentViewSet
+from comments.views import CommentViewSet, LikeViewSet
 
-from rest_framework import routers
 
 router = routers.DefaultRouter()
 
@@ -32,9 +32,7 @@ router.register('api/comment', CommentViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('account.urls')),
-    # path('api/post/', include('post.urls')),
-    # path('api/comment/', include('comments.urls')),
+    path('api/like/<int:pk>/', LikeViewSet.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 
 urlpatterns += router.urls

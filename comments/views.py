@@ -1,10 +1,12 @@
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
-from comments.models import Comment
+from comments.models import Comment, Like
+from post.models import Post
 from comments.serializers import CommentSerializer
 
 
@@ -47,4 +49,30 @@ class CommentViewSet(ViewSet):
     def delete(self, request, pk=None):
         post = self.get_object()
         post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LikeViewSet(APIView):
+    queryset = Post.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = get_object_or_404(self.queryset, pk=self.kwargs.get('pk'))
+        return queryset
+
+    def post(self, request, pk=None, *args, **kwargs):
+        post = self.get_queryset()
+
+        if not post.likes.filter(user=request.user):
+            like = Like.objects.create(user=request.user)
+
+        post.likes_count = post.likes_count + 1
+        post.likes.add(like)
+        post.save()
+        return Response(status=status.HTTP_201_CREATED)
+
+    def delete(self, request, pk=None, *args, **kwargs):
+        post = self.get_queryset()
+        post.likes_count = post.likes_count - 1
+        post.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
